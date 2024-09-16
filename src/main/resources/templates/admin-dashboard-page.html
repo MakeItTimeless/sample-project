@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard Page</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="pull-right">
+            <br />
+            <a href="/">
+              <button type="button" class="btn btn-primary">Logout</button>
+            </a>
+          </div>
+          <h1 class="mt-4">
+            Good Morning, Admin<span id="user-name"></span>
+            <small class="text-muted">(Admin Dashboard)</small>
+          </h1>
+          <div class="mt-4">
+            <br />
+            <a th:href="@{create-train}">
+              <button type="button" class="btn btn-primary">
+                + Create Train
+              </button>
+            </a>
+            <a th:href="@{search-booked-ticket-details}">
+              <button type="button" class="btn btn-primary">
+                View Booked Ticket
+              </button>
+            </a>
+            <a th:href="@{delete-train}">
+              <button type="button" class="btn btn-primary">
+                Delete Train
+              </button>
+            </a>
+            <a th:href="@{edit-train}">
+              <button type="button" class="btn btn-primary">Edit Train</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <div class="container mt-4">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div id="train-details-container" class="row">
+            <!-- Train details will be dynamically inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function createTrainDetailElement(
+        train_id,
+        train_name,
+        from,
+        to,
+        date,
+        time
+      ) {
+        const trainDetails = document.createElement("div");
+        trainDetails.className = "col-md-12";
+        trainDetails.style.border = "1px solid #ddd";
+        trainDetails.style.borderRadius = "5px";
+        trainDetails.style.padding = "15px";
+        trainDetails.style.marginBottom = "20px";
+
+        trainDetails.innerHTML = `
+    <h2>${train_name} <small class="text-muted">#${train_id}</small></h2>
+    <div class="row">
+      <div class="col-xs-6">
+        <small>From:</small>
+        <p class="lead"><strong>${from}</strong></p>
+      </div>
+      <div class="col-xs-6">
+        <small>To:</small>
+        <p class="lead"><strong>${to}</strong></p>
+      </div>
+      <div class="col-xs-6">
+        <p>Train Date: ${date}</p>
+      </div>
+      <div class="col-xs-6">
+        <p class="lead">
+          Train Time
+          <span class="text-primary" style="font-size: 32px">
+            <strong>${time}</strong>
+          </span>
+        </p>
+      </div>
+    </div>
+  `;
+
+        return trainDetails;
+      }
+
+      function displayTrainDetails(train_id, train_name, from, to, date, time) {
+        const container = document.getElementById("train-details-container");
+        const trainDetailElement = createTrainDetailElement(
+          train_id,
+          train_name,
+          from,
+          to,
+          date,
+          time
+        );
+        container.appendChild(trainDetailElement);
+      }
+
+      async function fetchTrainData() {
+        const endpoint = `/api/all-trains`;
+        const response = await fetch(endpoint).then((response) =>
+          response.json()
+        );
+        return response;
+      }
+
+      async function updateTrainDisplay() {
+        const container = document.getElementById("train-details-container");
+        container.innerHTML = ""; // Clear previous content
+
+        const trains = await fetchTrainData();
+        trains.forEach((train) => {
+          displayTrainDetails(
+            train.trainNumber,
+            train.trainName,
+            train.source,
+            train.destination,
+            train.date,
+            train.time
+          );
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", updateTrainDisplay);
+    </script>
+  </body>
+</html>
