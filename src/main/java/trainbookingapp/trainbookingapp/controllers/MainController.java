@@ -16,6 +16,11 @@ public class MainController {
     return "admin-login-page.html";
   }
 
+  @GetMapping("/admin-register")
+  public String adminRegisterPage() {
+    return "admin-register-page.html";
+  }
+
   @GetMapping("/book-ticket")
   public String bookTicketPage() {
     return "book-ticket-page.html";

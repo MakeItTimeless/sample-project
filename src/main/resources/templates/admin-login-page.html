@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Login Page</title>
+    <title>Login Page</title>
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -18,9 +18,9 @@
           <center>
             <br />
             <br />
-            <h1>Admin Login</h1>
+            <h1>Login</h1>
           </center>
-          <form action="admin-dashboard">
+          <form id="loginForm">
             <div class="form-group">
               <label for="usr">Username:</label>
               <input type="text" class="form-control" id="usr" />
@@ -29,15 +29,67 @@
               <label for="pwd">Password:</label>
               <input type="password" class="form-control" id="pwd" />
             </div>
+            <div class="form-group text-right">
+              <a href="forgot=admin-password">Forgot password?</a>
+            </div>
             <button type="submit" class="btn btn-primary btn-block">
               Login
             </button>
+            <div class="form-group">
+              <br />
+              <center>
+                If new admin? <br />
+                <a href="admin-register">
+                  <button type="button" class="btn btn-link">
+                    Register Here
+                  </button>
+                </a>
+              </center>
+            </div>
           </form>
           <br />
+          <div id="errorContainer" class="text-center"></div>
+          <div id="messageContainer" class="text-center"></div>
         </div>
       </div>
     </div>
 
-    <!-- Login - Go to <a href="admin-dashboard-page.html">Admin Dashboard</a> -->
+    <script>
+      $(document).ready(function () {
+        $("#loginForm").submit(function (e) {
+          e.preventDefault();
+          const username = $("#usr").val();
+          const password = $("#pwd").val();
+
+          $.get(
+            `/api/admin-login?username=${username}&password=${password}`,
+            function (data, status) {
+              if (data.status === 200) {
+                console.log(data);
+                $("#messageContainer").html(`
+                <div class="alert alert-success">
+                  <strong>Success!</strong> Logged in successfully.
+                </div>
+              `);
+                localStorage.setItem("aadhar", data.message);
+                window.location.href = `/admin-dashboard`;
+              } else {
+                $("#messageContainer").html(`
+                <div class="alert alert-danger">
+                  <strong>Error!</strong> Invalid username or password.
+                </div>
+              `);
+              }
+            }
+          ).fail(function () {
+            $("#messageContainer").html(`
+              <div class="alert alert-danger">
+                <strong>Error!</strong> Unable to connect to the server. Please try again later.
+              </div>
+            `);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
