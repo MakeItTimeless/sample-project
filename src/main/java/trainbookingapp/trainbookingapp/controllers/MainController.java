@@ -50,6 +50,10 @@ public class MainController {
   public String forgotPasswordPage() {
     return "forgot-password-page.html";
   }
+  @GetMapping("/admin-forgot-password")
+  public String forgotadminPasswordPage() {
+    return "forgot-admin-password-page.html";
+  }
 
   @GetMapping("/passanger-details")
   public String passangerDetailsPage() {
@@ -64,6 +68,11 @@ public class MainController {
   @GetMapping("/reset-password")
   public String resetPasswordPage() {
     return "reset-password-page.html";
+  }
+
+  @GetMapping("/reset-admin-password")
+  public String resetadminPasswordPage() {
+    return "reset-admin-password-page.html";
   }
 
   @GetMapping("/search-booked-ticket-details")
