@@ -47,6 +47,7 @@ public class UserController {
   @GetMapping(path = "/register")
   public Response login(@ModelAttribute User user) {
     userRepository.save(user);
+    
     Response response = new Response();
     response.message = "Registration Successful";
     response.status = 200;
